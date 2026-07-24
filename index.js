@@ -5,6 +5,7 @@ const client = new Client({
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
+        GatewayIntentBits.DirectMessages,
     ]
 });
 
@@ -13,8 +14,13 @@ const CLIENT_ID = process.env.CLIENT_ID;
 
 const commands = [
     new SlashCommandBuilder()
-        .setName('spam1000')
-        .setDescription('١٠٠٠ نامەی سپام لەگەڵ وێنە لەسەر یەک دەنێرێت')
+        .setName('spamuser')
+        .setDescription('ناردنی ١٠٠٠ نامەی سپام بۆ چاتی تایبەتی کەسێکی دیاریکراو')
+        .addUserOption(option =>
+            option.setName('target')
+                .setDescription('ئەو کەسەی دەتەوێت سپامی بکەیت')
+                .setRequired(true)
+        )
         .addStringOption(option =>
             option.setName('text')
                 .setDescription('ئەو دەقەی دەتەوێت سپام بێت')
@@ -22,7 +28,7 @@ const commands = [
         )
         .addAttachmentOption(option =>
             option.setName('image')
-                .setDescription('ئەو وێنەیەی دەتەوێت لەگەڵ نامەکان بنێردرێت')
+                .setDescription('وێنە لەگەڵ نامەکان (ئارەزوومەندانە)')
                 .setRequired(false)
         )
 ].map(command => command.toJSON());
@@ -32,12 +38,11 @@ const rest = new REST({ version: '10' }).setToken(TOKEN);
 client.once('ready', async () => {
     console.log(`بۆتەکە ئامادەیە: ${client.user.tag}`);
     try {
-        console.log('دەستکرا بە تۆمارکردنی فەرمانەکانی سلاش...');
         await rest.put(
             Routes.applicationCommands(CLIENT_ID),
             { body: commands },
         );
-        console.log('فەرمانەکانی سلاش بە سەرکەوتوویی تۆمار کران.');
+        console.log('فەرمانەکان بە سەرکەوتوویی تۆمار کران.');
     } catch (error) {
         console.error(error);
     }
@@ -46,23 +51,27 @@ client.once('ready', async () => {
 client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
 
-    if (interaction.commandName === 'spam1000') {
+    if (interaction.commandName === 'spamuser') {
+        const targetUser = interaction.options.getUser('target');
         const text = interaction.options.getString('text');
         const image = interaction.options.getAttachment('image');
         
-        await interaction.reply({ content: 'دەستکرا بە ناردنی ١٠٠٠ نامە و وێنە...', ephemeral: true });
+        await interaction.reply({ content: `دەستکرا بە ناردنی ١٠٠٠ نامە بۆ چاتی ${targetUser.tag}...`, ephemeral: true });
 
         for (let i = 1; i <= 1000; i++) {
             setTimeout(async () => {
-                const messageData = { content: `${text} (${i})` };
-                
-                // ئەگەر وێنە دیاری کرابێت، لەگەڵ نامەکە دەنێردرێت
-                if (image) {
-                    messageData.files = [image.url];
-                }
+                try {
+                    const messageData = { content: `${text} (${i})` };
+                    
+                    if (image) {
+                        messageData.files = [image.url];
+                    }
 
-                await interaction.channel.send(messageData);
-            }, i * 1000); // ١ چرکە جیاوازی نێوان هەر نامەیەک بۆ پاراستنی بۆت
+                    await targetUser.send(messageData);
+                } catch (error) {
+                    console.error(`هەڵە لە ناردنی نامە بۆ ${targetUser.tag}:`, error.message);
+                }
+            }, i * 1000);
         }
     }
 });
