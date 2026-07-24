@@ -13,12 +13,17 @@ const CLIENT_ID = process.env.CLIENT_ID;
 
 const commands = [
     new SlashCommandBuilder()
-        .setName('spam50')
-        .setDescription('٥٠ نامەی سپام لەسەر یەک دەنێرێت')
+        .setName('spam1000')
+        .setDescription('١٠٠٠ نامەی سپام لەگەڵ وێنە لەسەر یەک دەنێرێت')
         .addStringOption(option =>
             option.setName('text')
                 .setDescription('ئەو دەقەی دەتەوێت سپام بێت')
                 .setRequired(true)
+        )
+        .addAttachmentOption(option =>
+            option.setName('image')
+                .setDescription('ئەو وێنەیەی دەتەوێت لەگەڵ نامەکان بنێردرێت')
+                .setRequired(false)
         )
 ].map(command => command.toJSON());
 
@@ -41,15 +46,23 @@ client.once('ready', async () => {
 client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
 
-    if (interaction.commandName === 'spam50') {
+    if (interaction.commandName === 'spam1000') {
         const text = interaction.options.getString('text');
+        const image = interaction.options.getAttachment('image');
         
-        await interaction.reply({ content: 'دەستکرا بە ناردنی ٥٠ نامە...', ephemeral: true });
+        await interaction.reply({ content: 'دەستکرا بە ناردنی ١٠٠٠ نامە و وێنە...', ephemeral: true });
 
-        for (let i = 1; i <= 50; i++) {
+        for (let i = 1; i <= 1000; i++) {
             setTimeout(async () => {
-                await interaction.channel.send(`${text} (${i})`);
-            }, i * 600);
+                const messageData = { content: `${text} (${i})` };
+                
+                // ئەگەر وێنە دیاری کرابێت، لەگەڵ نامەکە دەنێردرێت
+                if (image) {
+                    messageData.files = [image.url];
+                }
+
+                await interaction.channel.send(messageData);
+            }, i * 1000); // ١ چرکە جیاوازی نێوان هەر نامەیەک بۆ پاراستنی بۆت
         }
     }
 });
