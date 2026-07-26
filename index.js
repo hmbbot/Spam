@@ -1,79 +1,61 @@
-const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder } = require('discord.js');
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مۆسیقا و گۆرانی - کۆنتڕۆڵی گشتگیر</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,
-        GatewayIntentBits.DirectMessages,
-    ]
-});
+    <div class="main-container">
+        <!-- سەردێڕی پڕۆژە -->
+        <header>
+            <h1>پڕۆژەی کۆنتڕۆڵی گۆرانی</h1>
+            <p>یوتیوب • سپۆتیفای • تیک تۆک</p>
+        </header>
 
-const TOKEN = process.env.TOKEN;
-const CLIENT_ID = process.env.CLIENT_ID;
+        <!-- بەشی پیشاندانی کەنال و دۆخی ئێستا -->
+        <div class="display-screen">
+            <div id="platform-badge" class="badge youtube">یوتیوب</div>
+            <h2 id="song-title">ناوی گۆرانی لێرە دەردەکەوێت</h2>
+            <p id="artist-name">هونەرمەند</p>
+        </div>
 
-const commands = [
-    new SlashCommandBuilder()
-        .setName('spamuser')
-        .setDescription('ناردنی ١٠٠٠ نامەی سپام بۆ چاتی تایبەتی کەسێکی دیاریکراو')
-        .addUserOption(option =>
-            option.setName('target')
-                .setDescription('ئەو کەسەی دەتەوێت سپامی بکەیت')
-                .setRequired(true)
-        )
-        .addStringOption(option =>
-            option.setName('text')
-                .setDescription('ئەو دەقەی دەتەوێت سپام بێت')
-                .setRequired(true)
-        )
-        .addAttachmentOption(option =>
-            option.setName('image')
-                .setDescription('وێنە لەگەڵ نامەکان (ئارەزوومەندانە)')
-                .setRequired(false)
-        )
-].map(command => command.toJSON());
+        <!-- بەشی ١: کۆنتڕۆڵی مۆدێرن (ڕووکاری شوشەیی) -->
+        <section class="control-section modern-ui">
+            <h3>شێوازی مۆدێرن</h3>
+            <div class="players-grid">
+                <div class="player-card" data-platform="youtube">
+                    <span>YouTube</span>
+                </div>
+                <div class="player-card" data-platform="spotify">
+                    <span>Spotify</span>
+                </div>
+                <div class="player-card" data-platform="tiktok">
+                    <span>TikTok</span>
+                </div>
+            </div>
+        </section>
 
-const rest = new REST({ version: '10' }).setToken(TOKEN);
+        <!-- بەشی ٢: کۆنتڕۆڵی کلاسیک (دوگمەی ڕەقی دەستی) -->
+        <section class="control-section classic-ui">
+            <h3>شێوازی کلاسیک</h3>
+            <div class="classic-buttons">
+                <button class="c-btn" onclick="switchPlatform('youtube')">YouTube</button>
+                <button class="c-btn" onclick="switchPlatform('spotify')">Spotify</button>
+                <button class="c-btn" onclick="switchPlatform('tiktok')">TikTok</button>
+            </div>
+        </section>
 
-client.once('ready', async () => {
-    console.log(`بۆتەکە ئامادەیە: ${client.user.tag}`);
-    try {
-        await rest.put(
-            Routes.applicationCommands(CLIENT_ID),
-            { body: commands },
-        );
-        console.log('فەرمانەکان بە سەرکەوتوویی تۆمار کران.');
-    } catch (error) {
-        console.error(error);
-    }
-});
+        <!-- دوگمە سەرەکییەکانی کۆنتڕۆڵ (بە فەرمانی Control کاردەکەن) -->
+        <div class="global-controls">
+            <button id="prev-btn" class="ctrl-main-btn">⏮ پێشوو (Ctrl + ←)</button>
+            <button id="play-btn" class="ctrl-main-btn primary">⏵ لێدان / وه‌ستان (Ctrl + Space)</button>
+            <button id="next-btn" class="ctrl-main-btn">دواتر (Ctrl + →) ⏭</button>
+        </div>
+    </div>
 
-client.on('interactionCreate', async interaction => {
-    if (!interaction.isChatInputCommand()) return;
-
-    if (interaction.commandName === 'spamuser') {
-        const targetUser = interaction.options.getUser('target');
-        const text = interaction.options.getString('text');
-        const image = interaction.options.getAttachment('image');
-        
-        await interaction.reply({ content: `دەستکرا بە ناردنی ١٠٠٠ نامە بۆ چاتی ${targetUser.tag}...`, ephemeral: true });
-
-        for (let i = 1; i <= 1000; i++) {
-            setTimeout(async () => {
-                try {
-                    const messageData = { content: `${text} (${i})` };
-                    
-                    if (image) {
-                        messageData.files = [image.url];
-                    }
-
-                    await targetUser.send(messageData);
-                } catch (error) {
-                    console.error(`هەڵە لە ناردنی نامە بۆ ${targetUser.tag}:`, error.message);
-                }
-            }, i * 1000);
-        }
-    }
-});
-
-client.login(TOKEN);
+    <script src="control.js"></script>
+</body>
+</html>
