@@ -1,0 +1,161 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #1f1c2c, #928dab);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 30px;
+    border-radius: 20px;
+    width: 450px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    text-align: center;
+}
+
+header {
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+header p {
+    font-size: 13px;
+    color: #ddd;
+}
+
+/* شاشەی پیشاندان */
+.display-screen {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.badge.youtube { background: #ff0000; }
+.badge.spotify { background: #1db954; }
+.badge.tiktok { background: #000000; border: 1px solid #fff; }
+
+.display-screen h2 {
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.display-screen p {
+    font-size: 14px;
+    color: #bbb;
+    margin-top: 5px;
+}
+
+/* بەشی مۆدێرن */
+.control-section {
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.control-section h3 {
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #ffcc00;
+}
+
+.players-grid {
+    display: flex;
+    gap: 10px;
+}
+
+.player-card {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 13px;
+    text-align: center;
+}
+
+.player-card:hover, .player-card.active {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: #fff;
+}
+
+/* بەشی کلاسیک */
+.classic-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.c-btn {
+    flex: 1;
+    background: #e0e0e0;
+    color: #333;
+    border: 2px solid #888;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 3px #999;
+    transition: 0.1s;
+}
+
+.c-btn:active {
+    box-shadow: 0 1px #666;
+    transform: translateY(2px);
+}
+
+/* کۆنتڕۆڵی گشتی فەرمانەکان */
+.global-controls {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.ctrl-main-btn {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    padding: 10px 5px;
+    border-radius: 8px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.ctrl-main-btn.primary {
+    background: #ffcc00;
+    color: #000;
+    font-weight: bold;
+}
+
+.ctrl-main-btn:hover {
+    opacity: 0.8;
+}
